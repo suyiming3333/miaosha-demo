@@ -1,0 +1,24 @@
+spring:
+  thymeleaf:
+    cache: false
+    content-type: text/html
+    enabled: true
+    mode: HTML5
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+  datasource:
+    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&tinyInt1isBit=false&useSSL=true
+    username: root
+    password:
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    filters: stat
+
+mybatis:
+  type-aliases-package: com.sym.miaosha.domain
+  mapper-locations: classpath:/mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    default-fetch-size: 100
+    default-statement-timeout: 3000
