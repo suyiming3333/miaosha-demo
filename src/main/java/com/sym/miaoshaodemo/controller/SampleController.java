@@ -3,12 +3,9 @@ package com.sym.miaoshaodemo.controller;
 import com.sym.miaoshaodemo.domain.User;
 import com.sym.miaoshaodemo.redis.RedisService;
 import com.sym.miaoshaodemo.redis.UserKey;
-import com.sym.miaoshaodemo.result.CodeMsg;
 import com.sym.miaoshaodemo.result.Result;
-import com.sym.miaoshaodemo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -17,8 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/sample")
 public class SampleController {
 
-	@Autowired
-    UserService userService;
 	
 	@Autowired
     RedisService redisService;

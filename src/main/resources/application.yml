@@ -17,6 +17,11 @@ spring:
   redis:
     host: 127.0.0.1
     port: 6379
+  http:
+    encoding:
+      enabled: true
+      charset: UTF-8
+      force: true
 
 mybatis:
   type-aliases-package: com.sym.miaosha.domain
@@ -25,3 +30,6 @@ mybatis:
     map-underscore-to-camel-case: true
     default-fetch-size: 100
     default-statement-timeout: 3000
+server:
+  tomcat:
+    uri-encoding: UTF-8
