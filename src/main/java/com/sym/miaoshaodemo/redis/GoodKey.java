@@ -1,0 +1,20 @@
+package com.sym.miaoshaodemo.redis;
+
+/**
+ * @author suyiming3333@gmail.com
+ * @version V1.0
+ * @Title: GoodKey
+ * @Package com.sym.miaoshaodemo.redis
+ * @Description: TODO
+ * @date 2019/5/4 17:50
+ */
+public class GoodKey extends BasePrefix {
+
+    public static final int TOKEN_EXPIRE = 3600*24 * 2;
+
+    private GoodKey(int expireSeconds, String prefix) {
+        super(expireSeconds, prefix);
+    }
+
+    public static GoodKey token = new GoodKey(TOKEN_EXPIRE,"gd");
+}

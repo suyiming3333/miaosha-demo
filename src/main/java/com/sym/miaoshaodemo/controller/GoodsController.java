@@ -1,19 +1,24 @@
 package com.sym.miaoshaodemo.controller;
 
+import com.sym.miaoshaodemo.domain.Good;
 import com.sym.miaoshaodemo.domain.MiaoshaUser;
+import com.sym.miaoshaodemo.redis.GoodKey;
 import com.sym.miaoshaodemo.redis.RedisService;
-import com.sym.miaoshaodemo.service.MiaoshaUserService;
+import com.sym.miaoshaodemo.service.GoodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/goods")
 public class GoodsController {
 
 	@Autowired
-	MiaoshaUserService userService;
+    private GoodService goodService;
 	
 	@Autowired
 	RedisService redisService;
@@ -30,8 +35,16 @@ public class GoodsController {
      */
     @RequestMapping("/to_list")
     public String list(Model model, MiaoshaUser user) {
+        List<Good> list = goodService.getAllGoodList(1);
+        redisService.set(GoodKey.token,"type1",list);
     	model.addAttribute("user", user);
         return "goods_list";
+    }
+
+    @RequestMapping("/getListFromRedis")
+    @ResponseBody
+    public String getListFromRedis() {
+        return redisService.get(GoodKey.token,"type1",String.class);
     }
     
 }
