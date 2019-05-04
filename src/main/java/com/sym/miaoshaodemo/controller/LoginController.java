@@ -39,6 +39,16 @@ public class LoginController {
         return "login";
     }
 
+    /**
+     * @description: TODO　　
+     * @params
+     * @param response
+     * @param loginVo
+     * @return com.sym.miaoshaodemo.result.Result<java.lang.Boolean>
+     * @throws
+     * @author suyiming3333
+     * @date 2019/5/4 15:32
+     */
     @RequestMapping("/do_login")
     @ResponseBody
     public Result<Boolean> doLogin(HttpServletResponse response, @Valid LoginVo loginVo) {

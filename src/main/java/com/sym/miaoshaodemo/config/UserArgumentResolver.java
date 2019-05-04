@@ -15,13 +15,25 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-
+/**
+ * 自定义参数处理解析器
+ */
 @Service
 public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
 	@Autowired
 	MiaoshaUserService userService;
-	
+
+
+	/**
+	 * @description: 　　方法参数匹配，才进行回调处理
+	 * @params
+	 * @param parameter
+	 * @return boolean
+	 * @throws
+	 * @author suyiming3333
+	 * @date 2019/5/4 15:29
+	 */
 	public boolean supportsParameter(MethodParameter parameter) {
 		Class<?> clazz = parameter.getParameterType();
 		return clazz== MiaoshaUser.class;
@@ -41,6 +53,16 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 		return userService.getByToken(response, token);
 	}
 
+	/**
+	 * @description: 遍历cookies　　
+	 * @params
+	 * @param request
+	 * @param cookiName
+	 * @return java.lang.String
+	 * @throws
+	 * @author suyiming3333
+	 * @date 2019/5/4 14:55
+	 */
 	private String getCookieValue(HttpServletRequest request, String cookiName) {
 		Cookie[]  cookies = request.getCookies();
 		for(Cookie cookie : cookies) {
