@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+/**
+ * 全局异常处理器，
+ * 使出异常后可以有好的反馈给调用者
+ */
 @ControllerAdvice
 @ResponseBody
 public class GlobalExceptionHandler {

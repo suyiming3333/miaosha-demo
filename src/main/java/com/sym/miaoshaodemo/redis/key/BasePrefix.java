@@ -1,6 +1,6 @@
-package com.sym.miaoshaodemo.redis;
+package com.sym.miaoshaodemo.redis.key;
 
-public abstract class BasePrefix implements KeyPrefix{
+public abstract class BasePrefix implements KeyPrefix {
 	
 	private int expireSeconds;
 	

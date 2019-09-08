@@ -1,7 +1,9 @@
 package com.sym.miaoshaodemo.service;
 
 import com.sym.miaoshaodemo.dao.GoodMapper;
-import com.sym.miaoshaodemo.domain.Good;
+import com.sym.miaoshaodemo.domain.Goods;
+import com.sym.miaoshaodemo.domain.MiaoshaGoods;
+import com.sym.miaoshaodemo.vo.GoodsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +23,7 @@ public class GoodService{
     @Autowired
     private GoodMapper goodMapper;
 
-    public List<Good> getAllGoodList(int id){
-        return goodMapper.getAllGoodsList(1);
+    public List<GoodsVo> getAllGoodList(int id){
+        return goodMapper.getAllGoodsList(id);
     }
 }

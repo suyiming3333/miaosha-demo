@@ -1,6 +1,8 @@
 package com.sym.miaoshaodemo.dao;
 
-import com.sym.miaoshaodemo.domain.Good;
+import com.sym.miaoshaodemo.domain.Goods;
+import com.sym.miaoshaodemo.domain.MiaoshaGoods;
+import com.sym.miaoshaodemo.vo.GoodsVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,5 +20,5 @@ import java.util.List;
 @Mapper
 public interface GoodMapper {
 
-    List<Good> getAllGoodsList(@Param("id")long id);
+    List<GoodsVo> getAllGoodsList(@Param("id") int id);
 }

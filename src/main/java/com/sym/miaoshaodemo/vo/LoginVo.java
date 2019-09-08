@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 public class LoginVo {
 
     @NotNull
-    @IsMobile
+    @IsMobile//自定义验证器 判断是否为手机
     private String mobile;
 
     @NotNull

@@ -1,4 +1,4 @@
-package com.sym.miaoshaodemo.redis;
+package com.sym.miaoshaodemo.redis.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

@@ -6,8 +6,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.sym.miaoshaodemo.dao.MiaoshaUserDao;
 import com.sym.miaoshaodemo.domain.MiaoshaUser;
 import com.sym.miaoshaodemo.exception.GlobalException;
-import com.sym.miaoshaodemo.redis.MiaoshaUserKey;
-import com.sym.miaoshaodemo.redis.RedisService;
+import com.sym.miaoshaodemo.redis.key.MiaoshaUserKey;
+import com.sym.miaoshaodemo.redis.service.RedisService;
 import com.sym.miaoshaodemo.result.CodeMsg;
 import com.sym.miaoshaodemo.util.MD5Util;
 import com.sym.miaoshaodemo.util.UUIDUtil;
@@ -59,6 +59,7 @@ public class MiaoshaUserService {
 
 	public boolean login(HttpServletResponse response, LoginVo loginVo) {
 		if(loginVo == null) {
+			//直接抛出业务异常
 			throw new GlobalException(CodeMsg.SERVER_ERROR);
 		}
 		String mobile = loginVo.getMobile();
@@ -75,8 +76,9 @@ public class MiaoshaUserService {
 		if(!calcPass.equals(dbPass)) {
 			throw new GlobalException(CodeMsg.PASSWORD_ERROR);
 		}
-		//生成cookie
+		//登陆成功后，生成cookie给前端
 		String token = UUIDUtil.uuid();
+		/**添加cookie，将token与用户信息绑定放到redis,用于做session同步**/
 		addCookie(response, token, user);
 		return true;
 	}

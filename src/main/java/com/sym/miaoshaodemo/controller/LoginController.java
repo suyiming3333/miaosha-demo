@@ -1,6 +1,6 @@
 package com.sym.miaoshaodemo.controller;
 
-import com.sym.miaoshaodemo.redis.RedisService;
+import com.sym.miaoshaodemo.redis.service.RedisService;
 import com.sym.miaoshaodemo.result.Result;
 import com.sym.miaoshaodemo.service.MiaoshaUserService;
 import com.sym.miaoshaodemo.vo.LoginVo;

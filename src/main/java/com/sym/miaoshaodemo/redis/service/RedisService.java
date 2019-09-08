@@ -1,5 +1,6 @@
-package com.sym.miaoshaodemo.redis;
+package com.sym.miaoshaodemo.redis.service;
 
+import com.sym.miaoshaodemo.redis.key.KeyPrefix;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +18,12 @@ public class RedisService {
 	/**
 	 * 获取单个对象
 	 * */
-	public <T> T get(KeyPrefix prefix, String key,  Class<T> clazz) {
+	public <T> T get(KeyPrefix prefix, String key, Class<T> clazz) {
 		 Jedis jedis = null;
 		 try {
 			 jedis =  jedisPool.getResource();
 			 //生成真正的key
-			 String realKey  = prefix.getPrefix() + key;
+			 String realKey  = prefix.getPrefix()+ "-" + key;
 			 String  str = jedis.get(realKey);
 			 T t =  stringToBean(str, clazz);
 			 return t;
@@ -43,7 +44,7 @@ public class RedisService {
 				 return false;
 			 }
 			//生成真正的key
-			 String realKey  = prefix.getPrefix() + key;
+			 String realKey  = prefix.getPrefix()+ "-" + key;
 			 int seconds =  prefix.expireSeconds();
 			 if(seconds <= 0) {
 				 jedis.set(realKey, str);

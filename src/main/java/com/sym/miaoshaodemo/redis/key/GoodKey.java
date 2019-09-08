@@ -1,4 +1,4 @@
-package com.sym.miaoshaodemo.redis;
+package com.sym.miaoshaodemo.redis.key;
 
 /**
  * @author suyiming3333@gmail.com
