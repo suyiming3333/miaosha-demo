@@ -1,17 +1,17 @@
 package com.sym.miaoshaodemo.domain;
 
 public class Goods {
-	private Long id;
+	private Integer id;
 	private String goodsName;
 	private String goodsTitle;
 	private String goodsImg;
 	private String goodsDetail;
 	private Double goodsPrice;
 	private Integer goodsStock;
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	public String getGoodsName() {

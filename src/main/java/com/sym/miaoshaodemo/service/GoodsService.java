@@ -18,12 +18,16 @@ import java.util.List;
  * @date 2019/5/4 17:39
  */
 
-@Service
-public class GoodService{
+@Service("goodsService")
+public class GoodsService{
     @Autowired
     private GoodMapper goodMapper;
 
     public List<GoodsVo> getAllGoodList(int id){
         return goodMapper.getAllGoodsList(id);
+    }
+
+    public void reduceStock(int goodsId){
+        goodMapper.reduceStock(goodsId);
     }
 }

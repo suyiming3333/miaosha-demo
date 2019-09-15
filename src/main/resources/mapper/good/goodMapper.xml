@@ -19,4 +19,9 @@
             and g.id = #{id}
         </if>
     </select>
+
+    <update id="reduceStock">
+        update goods g
+          set g.goodsStock = g.goodsStock - 1
+        where g.id = #{goodsId}    </update>
 </mapper>

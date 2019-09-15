@@ -1,13 +1,12 @@
 package com.sym.miaoshaodemo.controller;
 
-import com.sym.miaoshaodemo.domain.Goods;
-import com.sym.miaoshaodemo.domain.MiaoshaGoods;
+
 import com.sym.miaoshaodemo.domain.MiaoshaUser;
 import com.sym.miaoshaodemo.exception.GlobalException;
 import com.sym.miaoshaodemo.redis.key.GoodKey;
 import com.sym.miaoshaodemo.redis.service.RedisService;
 import com.sym.miaoshaodemo.result.CodeMsg;
-import com.sym.miaoshaodemo.service.GoodService;
+import com.sym.miaoshaodemo.service.GoodsService;
 import com.sym.miaoshaodemo.vo.GoodsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +22,7 @@ import java.util.List;
 public class GoodsController {
 
 	@Autowired
-    private GoodService goodService;
+    private GoodsService goodService;
 	
 	@Autowired
 	RedisService redisService;

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sym.miaoshaodemo.dao.OrderMapper">
+    <select id="getExistsMiaoShaOrder" resultType="HashMap">
+        select m.* from ms_order_ref m
+          where m.userId = #{userId}
+          and m.goodsId = #{goodsId}
+    </select>
+
+    <insert id="addOrder" parameterType="com.sym.miaoshaodemo.domain.OrderInfo">
+        insert into ms_order t(
+          t.userId,
+          t.goodsId,
+          t.deliveryAddrId,
+          t.goodsName,
+          t.goodsCount,
+          t.goodsPrice,
+          t.orderChannel,
+          t.status,
+          t.createDate
+        )values(
+          #{userId},
+          #{goodsId},
+          #{deliveryAddrId},
+          #{goodsName},
+          #{goodsCount},
+          #{goodsPrice},
+          #{orderChannel},
+          #{status},
+          #{createDate}
+        )
+        <selectKey keyColumn="id" keyProperty="id" resultType="Integer" statementType="STATEMENT">
+            select last_insert_id()
+        </selectKey>
+    </insert>
+
+    <insert id="addOrderRef">
+        insert into ms_order_ref t(
+          t.userId,
+          t.orderId,
+          t.goodsId
+        )values(
+          #{userId},
+          #{orderId},
+          #{goodsId}
+        )
+    </insert>
+</mapper>

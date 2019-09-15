@@ -3,10 +3,10 @@ package com.sym.miaoshaodemo.domain;
 import java.util.Date;
 
 public class OrderInfo {
-	private Long id;
-	private Long userId;
-	private Long goodsId;
-	private Long  deliveryAddrId;
+	private Integer id;
+	private Integer userId;
+	private Integer goodsId;
+	private Integer  deliveryAddrId;
 	private String goodsName;
 	private Integer goodsCount;
 	private Double goodsPrice;
@@ -14,28 +14,28 @@ public class OrderInfo {
 	private Integer status;
 	private Date createDate;
 	private Date payDate;
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
-	public Long getUserId() {
+	public Integer getUserId() {
 		return userId;
 	}
-	public void setUserId(Long userId) {
+	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-	public Long getGoodsId() {
+	public Integer getGoodsId() {
 		return goodsId;
 	}
-	public void setGoodsId(Long goodsId) {
+	public void setGoodsId(Integer goodsId) {
 		this.goodsId = goodsId;
 	}
-	public Long getDeliveryAddrId() {
+	public Integer getDeliveryAddrId() {
 		return deliveryAddrId;
 	}
-	public void setDeliveryAddrId(Long deliveryAddrId) {
+	public void setDeliveryAddrId(Integer deliveryAddrId) {
 		this.deliveryAddrId = deliveryAddrId;
 	}
 	public String getGoodsName() {

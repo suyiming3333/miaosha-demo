@@ -21,4 +21,6 @@ import java.util.List;
 public interface GoodMapper {
 
     List<GoodsVo> getAllGoodsList(@Param("id") int id);
+
+    void reduceStock(@Param("goodsId")int goodsId);
 }

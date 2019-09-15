@@ -3,7 +3,7 @@ package com.sym.miaoshaodemo.domain;
 import java.util.Date;
 
 public class MiaoshaUser {
-	private Long id;
+	private Integer id;
 	private String nickname;
 	private String password;
 	private String salt;
@@ -21,10 +21,10 @@ public class MiaoshaUser {
 	}
 
 	private Double miaoshaPrice;
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	public String getNickname() {
