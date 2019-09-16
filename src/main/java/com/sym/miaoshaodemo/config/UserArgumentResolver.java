@@ -16,7 +16,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 /**
- * ×Ô¶¨Òå²ÎÊý´¦Àí½âÎöÆ÷
+ * ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  */
 @Service
 public class UserArgumentResolver implements HandlerMethodArgumentResolver {
@@ -26,7 +26,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
 
 	/**
-	 * @description: ¡¡¡¡·½·¨²ÎÊýÆ¥Åä£¬²Å½øÐÐ»Øµ÷´¦Àí
+	 * @description: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¥ï¿½ä£¬ï¿½Å½ï¿½ï¿½Ð»Øµï¿½ï¿½ï¿½ï¿½ï¿½
 	 * @params
 	 * @param parameter
 	 * @return boolean
@@ -54,7 +54,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 	}
 
 	/**
-	 * @description: ±éÀúcookies¡¡¡¡
+	 * @description: ï¿½ï¿½ï¿½ï¿½cookiesï¿½ï¿½ï¿½ï¿½
 	 * @params
 	 * @param request
 	 * @param cookiName
@@ -65,6 +65,10 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 	 */
 	private String getCookieValue(HttpServletRequest request, String cookiName) {
 		Cookie[]  cookies = request.getCookies();
+
+		if(cookies == null || cookies.length<0){
+			return null;
+		}
 		for(Cookie cookie : cookies) {
 			if(cookie.getName().equals(cookiName)) {
 				return cookie.getValue();
