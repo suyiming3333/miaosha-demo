@@ -29,8 +29,8 @@ public class MiaoshaUserService {
 	@Autowired
 	RedisService redisService;
 	
-	public MiaoshaUser getById(long id) {
-		return miaoshaUserDao.getById(id);
+	public MiaoshaUser getByMobile(long mobile) {
+		return miaoshaUserDao.getByMobile(mobile);
 	}
 
     /**
@@ -65,7 +65,7 @@ public class MiaoshaUserService {
 		String mobile = loginVo.getMobile();
 		String formPass = loginVo.getPassword();
 		//判断手机号是否存在
-		MiaoshaUser user = getById(Long.parseLong(mobile));
+		MiaoshaUser user = getByMobile(Long.parseLong(mobile));
 		if(user == null) {
 			throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
 		}

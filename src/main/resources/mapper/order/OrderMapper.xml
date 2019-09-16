@@ -8,26 +8,26 @@
     </select>
 
     <insert id="addOrder" parameterType="com.sym.miaoshaodemo.domain.OrderInfo">
-        insert into ms_order t(
-          t.userId,
-          t.goodsId,
-          t.deliveryAddrId,
-          t.goodsName,
-          t.goodsCount,
-          t.goodsPrice,
-          t.orderChannel,
-          t.status,
-          t.createDate
+        insert into ms_order (
+          userId,
+          goodsId,
+          deliveryAddrId,
+          goodsName,
+          goodsCount,
+          goodsPrice,
+          orderChannel,
+          status,
+          createDate
         )values(
-          #{userId},
-          #{goodsId},
-          #{deliveryAddrId},
-          #{goodsName},
-          #{goodsCount},
-          #{goodsPrice},
-          #{orderChannel},
-          #{status},
-          #{createDate}
+          #{orderInfo.userId},
+          #{orderInfo.goodsId},
+          #{orderInfo.deliveryAddrId},
+          #{orderInfo.goodsName},
+          #{orderInfo.goodsCount},
+          #{orderInfo.goodsPrice},
+          #{orderInfo.orderChannel},
+          #{orderInfo.status},
+          #{orderInfo.createDate}
         )
         <selectKey keyColumn="id" keyProperty="id" resultType="Integer" statementType="STATEMENT">
             select last_insert_id()
@@ -35,10 +35,10 @@
     </insert>
 
     <insert id="addOrderRef">
-        insert into ms_order_ref t(
-          t.userId,
-          t.orderId,
-          t.goodsId
+        insert into ms_order_ref(
+          userId,
+          orderId,
+          goodsId
         )values(
           #{userId},
           #{orderId},

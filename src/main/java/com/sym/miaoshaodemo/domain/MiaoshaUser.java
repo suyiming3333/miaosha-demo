@@ -12,6 +12,16 @@ public class MiaoshaUser {
 	private Date lastLoginDate;
 	private Integer loginCount;
 
+	public Long getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(Long mobile) {
+		this.mobile = mobile;
+	}
+
+	private Long mobile;
+
 	public Double getMiaoshaPrice() {
 		return miaoshaPrice;
 	}

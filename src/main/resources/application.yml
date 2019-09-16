@@ -33,3 +33,7 @@ mybatis:
 server:
   tomcat:
     uri-encoding: UTF-8
+
+logging:
+  level:
+    com.sym.miaoshaodemo.dao : debug
