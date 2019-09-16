@@ -57,4 +57,12 @@ public class LoginController {
         userService.login(response, loginVo);
         return Result.success(true);
     }
+
+    @RequestMapping("/do_login2")
+    @ResponseBody
+    public Result<String> doLogin2(HttpServletResponse response, @Valid LoginVo loginVo) {
+        log.info(loginVo.toString());
+        //登录
+        return Result.success(userService.login2(response, loginVo));
+    }
 }

@@ -21,7 +21,8 @@
     </select>
 
     <update id="reduceStock">
-        update goods g
-          set g.goodsStock = g.goodsStock - 1
-        where g.id = #{goodsId}    </update>
+        update ms_good g
+          set g.stockCount = g.stockCount - 1
+        where g.goodsId = #{goodsId}
+    </update>
 </mapper>

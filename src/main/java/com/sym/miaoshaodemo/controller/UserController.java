@@ -26,6 +26,7 @@ public class UserController {
 
     @RequestMapping("/info")
     public Result<MiaoshaUser> info(MiaoshaUser user) {
+        System.out.println(user.getNickname());
         return Result.success(user);
     }
 }
