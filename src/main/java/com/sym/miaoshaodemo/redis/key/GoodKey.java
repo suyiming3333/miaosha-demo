@@ -21,4 +21,7 @@ public class GoodKey extends BasePrefix {
     public static GoodKey goodList = new GoodKey(120,"goodList");
 
     public static GoodKey goodDetail = new GoodKey(360,"goodDetail");
+
+    public static GoodKey gDetail = new GoodKey(300,"gDetail");
+
 }

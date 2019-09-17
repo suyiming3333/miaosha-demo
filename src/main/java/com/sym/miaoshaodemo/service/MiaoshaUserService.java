@@ -83,6 +83,8 @@ public class MiaoshaUserService {
 				//密码不对
 				throw new GlobalException(CodeMsg.PASSWORD_ERROR);
 			}
+			//登陆成功后，生成cookie给前端
+			token = UUIDUtil.uuid();
 			//设置cookie、redis保存token-user
 			addCookie(response, token, user);
 			System.out.println("load user from redis");

@@ -6,7 +6,9 @@ import com.sym.miaoshaodemo.exception.GlobalException;
 import com.sym.miaoshaodemo.redis.key.GoodKey;
 import com.sym.miaoshaodemo.redis.service.RedisService;
 import com.sym.miaoshaodemo.result.CodeMsg;
+import com.sym.miaoshaodemo.result.Result;
 import com.sym.miaoshaodemo.service.GoodsService;
+import com.sym.miaoshaodemo.vo.GoodsDetailVo;
 import com.sym.miaoshaodemo.vo.GoodsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -133,6 +135,48 @@ public class GoodsController {
         }
         System.out.println("get data from db");
         return goodDetailHtml;
+    }
+
+    @RequestMapping(value="/detail/{goodsId}")
+    @ResponseBody
+    public Result<GoodsDetailVo> detail(HttpServletRequest request, HttpServletResponse response, Model model,MiaoshaUser user,
+                                        @PathVariable("goodsId")int goodsId) {
+
+        //先从redis里面取
+        GoodsVo goods = redisService.get(GoodKey.gDetail,String.valueOf(goodsId),GoodsVo.class);
+        if(goods==null){
+            //再从数据库里面取
+            List<GoodsVo> goodList = goodService.getAllGoodList(goodsId);
+            if(goodList.size()<0){
+                throw new GlobalException(CodeMsg.SERVER_ERROR);
+            }
+            goods = goodList.get(0);
+            redisService.set(GoodKey.gDetail,String.valueOf(goodsId),goods);
+            System.out.println("redis not found data,load from db");
+        }
+
+
+        long startAt = goods.getStartDate().getTime();
+        long endAt = goods.getEndDate().getTime();
+        long now = System.currentTimeMillis();
+        int miaoshaStatus = 0;
+        int remainSeconds = 0;
+        if(now < startAt ) {//秒杀还没开始，倒计时
+            miaoshaStatus = 0;
+            remainSeconds = (int)((startAt - now )/1000);
+        }else  if(now > endAt){//秒杀已经结束
+            miaoshaStatus = 2;
+            remainSeconds = -1;
+        }else {//秒杀进行中
+            miaoshaStatus = 1;
+            remainSeconds = 0;
+        }
+        GoodsDetailVo vo = new GoodsDetailVo();
+        vo.setGoods(goods);
+        vo.setUser(user);
+        vo.setRemainSeconds(remainSeconds);
+        vo.setMiaoshaStatus(miaoshaStatus);
+        return Result.success(vo);
     }
 
     @RequestMapping("/getListFromRedis")
