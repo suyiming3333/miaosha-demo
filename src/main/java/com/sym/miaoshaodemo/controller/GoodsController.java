@@ -9,12 +9,18 @@ import com.sym.miaoshaodemo.result.CodeMsg;
 import com.sym.miaoshaodemo.service.GoodsService;
 import com.sym.miaoshaodemo.vo.GoodsVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.thymeleaf.spring4.context.SpringWebContext;
+import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Controller
@@ -25,7 +31,13 @@ public class GoodsController {
     private GoodsService goodService;
 	
 	@Autowired
-	RedisService redisService;
+	private RedisService redisService;
+
+	@Autowired
+	private ApplicationContext applicationContext;
+
+    @Autowired
+    private ThymeleafViewResolver thymeleafViewResolver;
 
     /**
      * @description: TODO　　
@@ -40,17 +52,51 @@ public class GoodsController {
     @RequestMapping("/to_list")
     public String list(Model model, MiaoshaUser user) {
         List<GoodsVo> list = goodService.getAllGoodList(0);
-        redisService.set(GoodKey.token,"type1",list);
     	model.addAttribute("user", user);
         model.addAttribute("goodsList", list);
         return "goods_list";
     }
 
-    @RequestMapping("/to_detail/{goodsId}")
-    public String detail(Model model,MiaoshaUser user,
-                         @PathVariable("goodsId")int goodsId) {
-        model.addAttribute("user", user);
 
+    @RequestMapping(value="/to_list2", produces="text/html")
+    @ResponseBody
+    public String list2(Model model, MiaoshaUser user, HttpServletRequest request, HttpServletResponse response) {
+        model.addAttribute("user", user);
+        //从redis取缓存
+        String html = redisService.get(GoodKey.goodList,"",String.class);
+        if(!StringUtils.isEmpty(html)){
+            System.out.println("从redis读取商品列表页面");
+            return html;
+        }
+        //否则从数据库里面重新取
+        List<GoodsVo> list = goodService.getAllGoodList(0);
+        model.addAttribute("goodsList", list);
+
+        SpringWebContext ctx = new SpringWebContext(request,response,
+                request.getServletContext(),request.getLocale(), model.asMap(), applicationContext );
+
+        //手动渲染
+        html = thymeleafViewResolver.getTemplateEngine().process("goods_list", ctx);
+        //设置缓存
+        if(!StringUtils.isEmpty(html)){
+            redisService.set(GoodKey.goodList,"",html);
+            System.out.println("从数据库读取商品列表页面");
+        }
+        return html;
+    }
+
+    @RequestMapping(value = "/to_detail/{goodsId}",produces="text/html")
+    @ResponseBody
+    public String detail(Model model,MiaoshaUser user,
+                         HttpServletRequest request, HttpServletResponse response,
+                         @PathVariable("goodsId")int goodsId) {
+        //先从缓存里面取
+        String goodDetailHtml = redisService.get(GoodKey.goodDetail,String.valueOf(goodsId),String.class);
+        if(!StringUtils.isEmpty(goodDetailHtml)){
+            System.out.println("get data from redis");
+            return goodDetailHtml;
+        }
+        //再从数据库里面取
         List<GoodsVo> goodList = goodService.getAllGoodList(goodsId);
         if(goodList.size()<0){
             throw new GlobalException(CodeMsg.SERVER_ERROR);
@@ -76,7 +122,17 @@ public class GoodsController {
         }
         model.addAttribute("miaoshaStatus", miaoshaStatus);
         model.addAttribute("remainSeconds", remainSeconds);
-        return "goods_detail";
+
+        SpringWebContext ctx = new SpringWebContext(request,response,
+                request.getServletContext(),request.getLocale(), model.asMap(), applicationContext );
+
+        //手动渲染
+        goodDetailHtml = thymeleafViewResolver.getTemplateEngine().process("goods_detail", ctx);
+        if(!StringUtils.isEmpty(goodDetailHtml)){
+            redisService.set(GoodKey.goodDetail,String.valueOf(goodsId),goodDetailHtml);
+        }
+        System.out.println("get data from db");
+        return goodDetailHtml;
     }
 
     @RequestMapping("/getListFromRedis")
