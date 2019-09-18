@@ -20,6 +20,8 @@ public interface OrderMapper {
 
     Map<String,Object> getExistsMiaoShaOrder(@Param("userId")int userId,@Param("goodsId")int goodsId);
 
+    OrderInfo getHasMiaoShaOrder(@Param("userId")int userId,@Param("goodsId")int goodsId);
+
     Integer addOrder(@Param("orderInfo") OrderInfo orderInfo);
 
     void addOrderRef(@Param("userId") int userId,@Param("orderId")int orderId,@Param("goodsId")int goodsId);

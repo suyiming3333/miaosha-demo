@@ -2,17 +2,25 @@ package com.sym.miaoshaodemo.controller;
 
 import com.sym.miaoshaodemo.domain.MiaoshaUser;
 import com.sym.miaoshaodemo.domain.OrderInfo;
+import com.sym.miaoshaodemo.rabbitmq.MQSender;
+import com.sym.miaoshaodemo.rabbitmq.MiaoshaMessage;
+import com.sym.miaoshaodemo.redis.key.GoodKey;
+import com.sym.miaoshaodemo.redis.key.OrderKey;
+import com.sym.miaoshaodemo.redis.service.RedisService;
 import com.sym.miaoshaodemo.result.CodeMsg;
+import com.sym.miaoshaodemo.result.Result;
 import com.sym.miaoshaodemo.service.GoodsService;
 import com.sym.miaoshaodemo.service.MiaoShaService;
 import com.sym.miaoshaodemo.service.OrderService;
 import com.sym.miaoshaodemo.vo.GoodsVo;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +35,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/miaosha")
-public class MiaoShaController {
+public class MiaoShaController implements InitializingBean {
 
     @Autowired
     private GoodsService goodService;
@@ -38,9 +46,75 @@ public class MiaoShaController {
     @Autowired
     private MiaoShaService miaoShaService;
 
+    @Autowired
+    private RedisService redisService;
+
+    @Autowired
+    MQSender sender;
+
+    /**用于标记商品是否秒杀玩了，目的是减少redis的访问**/
+    private HashMap<Integer, Boolean> localOverMap =  new HashMap<Integer, Boolean>();
+
+    /**
+     * controller实例化的时候初始化产品库存
+     * @throws Exception
+     */
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        //获取所有商品列表
+        List<GoodsVo> list = goodService.getAllGoodList(0);
+        //遍历list
+        for(GoodsVo goodsVo : list){
+            //设置redis缓存
+            redisService.set(GoodKey.goodStock,String.valueOf(goodsVo.getId()),goodsVo.getStockCount());
+            //本地内存标记，商品是否秒杀完
+            localOverMap.put(goodsVo.getId(),false);
+        }
+
+        System.out.println("init goods stock over");
+    }
+
 
     @RequestMapping("/do_miaosha")
-    public String doMiaoSha(Model model,
+    public Result<Integer> doMiaoSha(Model model,
+                                     MiaoshaUser user,
+                                     @RequestParam("goodsId")int goodsId){
+
+        model.addAttribute("user", user);
+        if(user == null) {
+            return Result.error(CodeMsg.SESSION_ERROR);
+        }
+
+        boolean isOver = localOverMap.get(goodsId);
+        if(isOver){
+            //本地内存已标记该商品秒杀完了
+            return Result.error(CodeMsg.SELL_OVER);
+        }
+        //预减库存
+        int stock = redisService.decr(GoodKey.goodStock,String.valueOf(goodsId)).intValue();
+        if(stock<0){
+            //预减库存不足
+            localOverMap.put(goodsId,true);
+            return Result.error(CodeMsg.SELL_OVER);
+        }
+
+        //判断用户是否已经秒杀过这个商品(redis)
+        OrderInfo orderInfo = redisService.get(OrderKey.msOrder,user.getId()+"-"+goodsId,OrderInfo.class);
+        if(orderInfo!=null){
+            return Result.error(CodeMsg.REPEATED_BUY);
+        }
+
+        //发送消息入队列
+        MiaoshaMessage mm = new MiaoshaMessage();
+        mm.setUser(user);
+        mm.setGoodsId(goodsId);
+        sender.sendMiaoshaMessage(mm);
+        return Result.success(0);//排队中
+    }
+
+
+    @RequestMapping("/do_miaosha2")
+    public String doMiaoSha2(Model model,
                             MiaoshaUser user,
                             @RequestParam("goodsId")int goodsId){
 
@@ -83,4 +157,5 @@ public class MiaoShaController {
         model.addAttribute("goods", goodsVo);
         return "order_detail";
     }
+
 }

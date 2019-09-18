@@ -6,4 +6,5 @@ public class OrderKey extends BasePrefix {
 		super(expireSeconds, prefix);
 	}
 
+	public static OrderKey msOrder = new OrderKey(0,"msOrder");
 }

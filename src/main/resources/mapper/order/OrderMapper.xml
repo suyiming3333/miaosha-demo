@@ -7,6 +7,13 @@
           and m.goodsId = #{goodsId}
     </select>
 
+    <select id="getHasMiaoShaOrder" resultType="com.sym.miaoshaodemo.domain.OrderInfo">
+        select * from ms_order t
+        where 1=1
+        and t.userId = #{userId}
+        and t.goodsId = #{goodsId}
+    </select>
+
     <insert id="addOrder" parameterType="com.sym.miaoshaodemo.domain.OrderInfo">
         insert into ms_order (
           userId,

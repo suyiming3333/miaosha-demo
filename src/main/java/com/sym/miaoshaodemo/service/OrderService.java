@@ -3,6 +3,8 @@ package com.sym.miaoshaodemo.service;
 import com.sym.miaoshaodemo.dao.OrderMapper;
 import com.sym.miaoshaodemo.domain.MiaoshaUser;
 import com.sym.miaoshaodemo.domain.OrderInfo;
+import com.sym.miaoshaodemo.redis.key.OrderKey;
+import com.sym.miaoshaodemo.redis.service.RedisService;
 import com.sym.miaoshaodemo.vo.GoodsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,8 +28,17 @@ public class OrderService {
     @Autowired
     private OrderMapper orderMapper;
 
+    @Autowired
+    RedisService redisService;
+
     public Map<String,Object> getExistsMiaoShaOrder(int userId,int goodsId){
         return orderMapper.getExistsMiaoShaOrder(userId,goodsId);
+    }
+
+    public OrderInfo getHasMiaoShaOrder(int userId,int goodsId){
+//        return orderMapper.getHasMiaoShaOrder(userId,goodsId);
+        return redisService.get(OrderKey.msOrder,userId+"-"+goodsId,OrderInfo.class);
+
     }
 
 
@@ -45,6 +56,8 @@ public class OrderService {
         orderInfo.setUserId(user.getId());
         int orderId = orderMapper.addOrder(orderInfo);
         orderMapper.addOrderRef(user.getId(),orderId,goods.getId());
+        //创建订单成功后将订单信息存入缓存
+        redisService.set(OrderKey.msOrder,user.getId()+"-"+goods.getId(),orderInfo);
         return orderInfo;
     }
 }

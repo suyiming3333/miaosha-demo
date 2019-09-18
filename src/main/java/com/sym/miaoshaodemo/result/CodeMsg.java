@@ -18,7 +18,9 @@ public class CodeMsg {
 	public static CodeMsg PASSWORD_ERROR = new CodeMsg(500215, "密码错误");
 	
 	//商品模块 5003XX
-	
+	public static CodeMsg SELL_OVER = new CodeMsg(500300, "卖光了sell over");
+	public static CodeMsg REPEATED_BUY = new CodeMsg(500300, "你已经买过了 has buyed");
+
 	//订单模块 5004XX
 	
 	//秒杀模块 5005XX
