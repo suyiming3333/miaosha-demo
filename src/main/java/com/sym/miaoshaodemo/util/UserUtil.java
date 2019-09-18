@@ -31,8 +31,8 @@ public class UserUtil {
 			user.setLoginCount(1);
 			user.setNickname("user"+i);
 			user.setRegisterDate(new Date());
-			user.setSalt("1a2b3c");
-			user.setPassword(MD5Util.inputPassToDbPass("123456", user.getSalt()));
+			user.setSalt("1a2b3c4d");
+			user.setPassword(MD5Util.inputPassToDbPass("111111", user.getSalt()));
 			users.add(user);
 		}
 //		System.out.println("create user");
@@ -71,7 +71,7 @@ public class UserUtil {
 			co.setRequestMethod("POST");
 			co.setDoOutput(true);
 			OutputStream out = co.getOutputStream();
-			String params = "mobile="+user.getMobile()+"&password="+MD5Util.inputPassToFormPass("123456");
+			String params = "mobile="+user.getMobile()+"&password="+MD5Util.inputPassToFormPass("111111");
 			out.write(params.getBytes());
 			out.flush();
 			InputStream inputStream = co.getInputStream();

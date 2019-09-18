@@ -20,6 +20,7 @@
         </if>
     </select>
 
+    <!--并发减库存，通过数据库的行级锁控制并发，减少超卖 and g.stockCount > 0-->
     <update id="reduceStock">
         update ms_good g
           set g.stockCount = g.stockCount - 1
