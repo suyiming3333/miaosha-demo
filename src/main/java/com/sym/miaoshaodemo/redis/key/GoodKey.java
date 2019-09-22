@@ -26,4 +26,6 @@ public class GoodKey extends BasePrefix {
 
     public static GoodKey goodStock = new GoodKey(0,"gStock");
 
+    public static GoodKey isGoodsOver = new GoodKey(0,"gOver");
+
 }

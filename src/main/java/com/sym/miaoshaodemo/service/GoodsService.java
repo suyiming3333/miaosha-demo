@@ -27,7 +27,12 @@ public class GoodsService{
         return goodMapper.getAllGoodsList(id);
     }
 
-    public void reduceStock(int goodsId){
-        goodMapper.reduceStock(goodsId);
+    public boolean reduceStock(int goodsId){
+        int ret = goodMapper.reduceStock(goodsId);
+        if(ret==1){
+            return true;
+        }else{
+            return false;
+        }
     }
 }

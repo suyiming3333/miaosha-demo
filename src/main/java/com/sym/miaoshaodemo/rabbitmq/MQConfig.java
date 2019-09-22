@@ -26,6 +26,21 @@ public class MQConfig {
 	public Queue queue() {
 		return new Queue(QUEUE, true);
 	}
+
+	@Bean
+	public Queue myQueue() {
+		return new Queue("myQueue", true);
+	}
+
+//	@Bean
+//	public DirectExchange directExchange(){
+//		return new DirectExchange("my-direct-exchange");
+//	}
+//
+//	@Bean
+//	public Binding myBiding(){
+//		return BindingBuilder.bind(myQueue()).to(directExchange()).with("myMiaosha");
+//	}
 	
 	/**
 	 * Topic模式 交换机Exchange

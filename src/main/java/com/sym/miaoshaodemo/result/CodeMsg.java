@@ -22,6 +22,9 @@ public class CodeMsg {
 	public static CodeMsg REPEATED_BUY = new CodeMsg(500300, "你已经买过了 has buyed");
 
 	//订单模块 5004XX
+	public static CodeMsg ORDER_NOT_EXIST = new CodeMsg(500300, "order not found");
+
+
 	
 	//秒杀模块 5005XX
 	public static CodeMsg MIAO_SHA_OVER = new CodeMsg(500500, "商品已经秒杀完毕");

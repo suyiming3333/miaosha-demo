@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.List;
@@ -75,7 +77,15 @@ public class MiaoShaController implements InitializingBean {
     }
 
 
+    /**
+     * QPS 700/s 本地环境
+     * @param model
+     * @param user
+     * @param goodsId
+     * @return
+     */
     @RequestMapping("/do_miaosha")
+    @ResponseBody
     public Result<Integer> doMiaoSha(Model model,
                                      MiaoshaUser user,
                                      @RequestParam("goodsId")int goodsId){
@@ -110,6 +120,23 @@ public class MiaoShaController implements InitializingBean {
         mm.setGoodsId(goodsId);
         sender.sendMiaoshaMessage(mm);
         return Result.success(0);//排队中
+    }
+
+    /**
+     * orderId：成功
+     * -1：秒杀失败
+     * 0： 排队中
+     * */
+    @RequestMapping(value="/result", method= RequestMethod.GET)
+    @ResponseBody
+    public Result<Integer> miaoshaResult(Model model,MiaoshaUser user,
+                                      @RequestParam("goodsId")int goodsId) {
+        model.addAttribute("user", user);
+        if(user == null) {
+            return Result.error(CodeMsg.SESSION_ERROR);
+        }
+        Integer result  =miaoShaService.getMiaoshaResult(user.getId(), goodsId);
+        return Result.success(result);
     }
 
 

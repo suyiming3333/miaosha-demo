@@ -7,6 +7,10 @@
           and m.goodsId = #{goodsId}
     </select>
 
+    <select id="getOrderById" resultType="com.sym.miaoshaodemo.domain.OrderInfo">
+        select * from ms_order where id = #{orderId}
+    </select>
+
     <select id="getHasMiaoShaOrder" resultType="com.sym.miaoshaodemo.domain.OrderInfo">
         select * from ms_order t
         where 1=1
@@ -14,7 +18,7 @@
         and t.goodsId = #{goodsId}
     </select>
 
-    <insert id="addOrder" parameterType="com.sym.miaoshaodemo.domain.OrderInfo">
+    <insert id="addOrder" useGeneratedKeys="true" keyProperty="orderInfo.id" parameterType="com.sym.miaoshaodemo.domain.OrderInfo">
         insert into ms_order (
           userId,
           goodsId,
@@ -36,9 +40,7 @@
           #{orderInfo.status},
           #{orderInfo.createDate}
         )
-        <selectKey keyColumn="id" keyProperty="id" resultType="Integer" statementType="STATEMENT">
-            select last_insert_id()
-        </selectKey>
+
     </insert>
 
     <insert id="addOrderRef">

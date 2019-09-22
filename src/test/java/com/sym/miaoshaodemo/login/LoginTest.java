@@ -10,6 +10,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -40,6 +41,9 @@ public class LoginTest {
 
     private LoginController loginController;
 
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
     @Before
     public void setUp(){
         loginController = new LoginController();
@@ -54,5 +58,11 @@ public class LoginTest {
         JSONObject jsonObject = JSON.parseObject(result.getBody());
 //        Assert.assertArrayEquals(true);jsonObject.get("data");
         System.out.println(jsonObject.get("data"));
+    }
+
+    @Test
+    public void sendMessage(){
+        amqpTemplate.convertAndSend("myTopic","aaa.3","hello msg");
+        System.out.println("end");
     }
 }

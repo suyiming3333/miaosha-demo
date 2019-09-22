@@ -41,6 +41,15 @@ public class OrderService {
 
     }
 
+    public OrderInfo getOrderById(int orderId) {
+        return orderMapper.getOrderById(orderId);
+    }
+
+    public int getMiaoshaResult(int userId,int goodsId){
+        OrderInfo orderInfo = redisService.get(OrderKey.msOrder,userId+"-"+goodsId,OrderInfo.class);
+        return orderInfo.getId();
+    }
+
 
     @Transactional
     public OrderInfo createOrder(MiaoshaUser user, GoodsVo goods){
@@ -54,7 +63,8 @@ public class OrderService {
         orderInfo.setOrderChannel(1);
         orderInfo.setStatus(0);
         orderInfo.setUserId(user.getId());
-        int orderId = orderMapper.addOrder(orderInfo);
+        int ret = orderMapper.addOrder(orderInfo);
+        int orderId = orderInfo.getId();
         orderMapper.addOrderRef(user.getId(),orderId,goods.getId());
         //创建订单成功后将订单信息存入缓存
         redisService.set(OrderKey.msOrder,user.getId()+"-"+goods.getId(),orderInfo);

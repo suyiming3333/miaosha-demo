@@ -51,7 +51,7 @@ public class GoodsController {
      * @author suyiming3333
      * @date 2019/5/4 15:23
      */
-    @RequestMapping("/to_list")
+    @RequestMapping("/to_list2")
     public String list(Model model, MiaoshaUser user) {
         List<GoodsVo> list = goodService.getAllGoodList(0);
     	model.addAttribute("user", user);
@@ -60,7 +60,7 @@ public class GoodsController {
     }
 
 
-    @RequestMapping(value="/to_list2", produces="text/html")
+    @RequestMapping(value="/to_list", produces="text/html")
     @ResponseBody
     public String list2(Model model, MiaoshaUser user, HttpServletRequest request, HttpServletResponse response) {
         model.addAttribute("user", user);

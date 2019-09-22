@@ -80,7 +80,7 @@ public class RedisService {
 		 try {
 			 jedis =  jedisPool.getResource();
 			//生成真正的key
-			 String realKey  = prefix.getPrefix() + key;
+			 String realKey  = prefix.getPrefix()+"-" + key;
 			return  jedis.incr(realKey);
 		 }finally {
 			  returnToPool(jedis);
@@ -95,7 +95,7 @@ public class RedisService {
 		 try {
 			 jedis =  jedisPool.getResource();
 			//生成真正的key
-			 String realKey  = prefix.getPrefix() + key;
+			 String realKey  = prefix.getPrefix()+"-" + key;
 			return  jedis.decr(realKey);
 		 }finally {
 			  returnToPool(jedis);

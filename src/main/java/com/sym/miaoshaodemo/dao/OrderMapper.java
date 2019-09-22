@@ -25,4 +25,6 @@ public interface OrderMapper {
     Integer addOrder(@Param("orderInfo") OrderInfo orderInfo);
 
     void addOrderRef(@Param("userId") int userId,@Param("orderId")int orderId,@Param("goodsId")int goodsId);
+
+    OrderInfo getOrderById(@Param("orderId") int orderId);
 }
