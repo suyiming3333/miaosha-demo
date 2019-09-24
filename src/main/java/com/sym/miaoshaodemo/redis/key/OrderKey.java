@@ -7,4 +7,9 @@ public class OrderKey extends BasePrefix {
 	}
 
 	public static OrderKey msOrder = new OrderKey(0,"msOrder");
+
+	public static String getKey(){
+		return "asda";
+	}
+
 }

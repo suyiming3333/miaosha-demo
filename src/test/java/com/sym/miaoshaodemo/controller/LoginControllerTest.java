@@ -31,7 +31,7 @@ public class LoginControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @Test
+//    @Test
     public void doLogin(){
         MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
         map.add("mobile","15914343735");

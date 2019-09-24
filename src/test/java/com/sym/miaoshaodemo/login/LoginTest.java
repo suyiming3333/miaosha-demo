@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sym.miaoshaodemo.controller.LoginController;
 import com.sym.miaoshaodemo.result.Result;
+import com.sym.miaoshaodemo.service.TestCacheService;
 import com.sym.miaoshaodemo.util.MD5Util;
 import com.sym.miaoshaodemo.vo.LoginVo;
 import org.junit.Assert;
@@ -42,14 +43,17 @@ public class LoginTest {
     private LoginController loginController;
 
     @Autowired
+    private TestCacheService testCacheService;
+
+    @Autowired
     private AmqpTemplate amqpTemplate;
 
-    @Before
+//    @Before
     public void setUp(){
         loginController = new LoginController();
     }
 
-    @Test
+//    @Test
     public void doLogin(){
         MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
         map.add("mobile","15914343735");
@@ -60,9 +64,25 @@ public class LoginTest {
         System.out.println(jsonObject.get("data"));
     }
 
-    @Test
+//    @Test
     public void sendMessage(){
         amqpTemplate.convertAndSend("myTopic","aaa.3","hello msg");
         System.out.println("end");
     }
+
+//    @Test
+    public void testCache(){
+        System.out.println(testCacheService.testMethod("10086"));
+    }
+
+    @Test
+    public void testCache2(){
+        testCacheService.testEvict("10086");
+    }
+
+    @Test
+    public void testCache3(){
+        testCacheService.testOrder(100112);
+    }
 }
+
