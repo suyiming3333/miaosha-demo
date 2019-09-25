@@ -70,14 +70,14 @@ public class LoginTest {
         System.out.println("end");
     }
 
-//    @Test
+    @Test
     public void testCache(){
-        System.out.println(testCacheService.testMethod("10086"));
+        System.out.println(testCacheService.testMethod2());
     }
 
     @Test
     public void testCache2(){
-        testCacheService.testEvict("10086");
+        testCacheService.testPut("10086");
     }
 
     @Test

@@ -4,6 +4,7 @@ import com.sym.miaoshaodemo.redis.annotation.MyRedisCache;
 import com.sym.miaoshaodemo.redis.annotation.MyRedisCacheEvict;
 import com.sym.miaoshaodemo.redis.annotation.MyRedisCachePut;
 import com.sym.miaoshaodemo.redis.key.KeyPrefix;
+import com.sym.miaoshaodemo.redis.key.RedisKeyEnum;
 import com.sym.miaoshaodemo.redis.service.RedisService;
 import com.sym.miaoshaodemo.util.SerializerUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -61,8 +62,10 @@ public class RedisCacheAspect {
         //获取参数类型
         Class<?>[] argTypes = new Class[joinPoint.getArgs().length];
 
-        for (int i = 0; i < args.length; i++) {
-            argTypes[i] = args[i].getClass();
+        if(args.length>0){
+            for (int i = 0; i < args.length; i++) {
+                argTypes[i] = args[i].getClass();
+            }
         }
 
         Method method = null;
@@ -73,9 +76,8 @@ public class RedisCacheAspect {
 
             //获取方法上面的注解
             MyRedisCachePut myRedisCache = method.getAnnotation(MyRedisCachePut.class);
-            int expire = myRedisCache.expire();
             String key = myRedisCache.key();
-            String prefix = myRedisCache.prefix();
+            RedisKeyEnum prefix = myRedisCache.prefix();
             Class classType = myRedisCache.classType();
             String realKey = null;
 
@@ -92,7 +94,7 @@ public class RedisCacheAspect {
             value = joinPoint.proceed();
 
             //设置缓存
-            set(prefix,realKey,expire,value);
+            set(prefix.getPrefixKey(),realKey,prefix.getExpire(),value);
             System.out.println("redis缓存成功");
 
         } catch (NoSuchMethodException e) {
@@ -118,8 +120,10 @@ public class RedisCacheAspect {
         //获取参数类型
         Class<?>[] argTypes = new Class[joinPoint.getArgs().length];
 
-        for (int i = 0; i < args.length; i++) {
-            argTypes[i] = args[i].getClass();
+        if(args.length>0){
+            for (int i = 0; i < args.length; i++) {
+                argTypes[i] = args[i].getClass();
+            }
         }
 
         Method method = null;
@@ -131,7 +135,7 @@ public class RedisCacheAspect {
             //获取方法上面的注解
             MyRedisCacheEvict myRedisCache = method.getAnnotation(MyRedisCacheEvict.class);
             String key = myRedisCache.key();
-            String prefix = myRedisCache.prefix();
+            RedisKeyEnum prefix = myRedisCache.prefix();
             String realKey = null;
 
             //如果注解有指定key 而且方法参数不为空
@@ -145,7 +149,7 @@ public class RedisCacheAspect {
             }
 
             //删除缓存
-            del(prefix,realKey);
+            del(prefix.getPrefixKey(),realKey);
             System.out.println("redis清除缓存"+prefix+"-"+realKey);
 
         } catch (NoSuchMethodException e) {
@@ -171,8 +175,10 @@ public class RedisCacheAspect {
         //获取参数类型
         Class<?>[] argTypes = new Class[joinPoint.getArgs().length];
 
-        for (int i = 0; i < args.length; i++) {
-            argTypes[i] = args[i].getClass();
+        if(args.length>0){
+            for (int i = 0; i < args.length; i++) {
+                argTypes[i] = args[i].getClass();
+            }
         }
 
         Method method = null;
@@ -183,11 +189,10 @@ public class RedisCacheAspect {
 
             //获取方法上面的注解
             MyRedisCache myRedisCache = method.getAnnotation(MyRedisCache.class);
-            int expire = myRedisCache.expire();
             String key = myRedisCache.key();
-            String prefix = myRedisCache.prefix();
+            RedisKeyEnum prefix = myRedisCache.prefix();
             Class classType = myRedisCache.classType();
-            String realKey = null;
+            String realKey = key;
 
             //如果注解有指定key 而且方法参数不为空
             if(key !=null && args.length>0){
@@ -207,7 +212,7 @@ public class RedisCacheAspect {
             }
 
             //尝试从缓存取值
-            value = get(prefix,realKey,classType);
+            value = get(prefix.getPrefixKey(),realKey,classType);
 
             //存在直接返回值
             if(value !=null){
@@ -220,7 +225,7 @@ public class RedisCacheAspect {
             System.out.println("redis 里面没有值，只能充数据库拿");
 
             //设置缓存
-            set(prefix,realKey,expire,value);
+            set(prefix.getPrefixKey(),realKey,prefix.getExpire(),value);
 
 
         } catch (NoSuchMethodException e) {

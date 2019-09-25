@@ -1,5 +1,7 @@
 package com.sym.miaoshaodemo.redis.annotation;
 
+import com.sym.miaoshaodemo.redis.key.RedisKeyEnum;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -17,6 +19,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MyRedisCacheEvict {
-    String prefix();
-    String key();
+    RedisKeyEnum prefix();
+    String key() default "";
 }
