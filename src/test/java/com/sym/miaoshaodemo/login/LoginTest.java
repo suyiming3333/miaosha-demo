@@ -3,6 +3,9 @@ package com.sym.miaoshaodemo.login;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sym.miaoshaodemo.controller.LoginController;
+import com.sym.miaoshaodemo.domain.Goods;
+import com.sym.miaoshaodemo.domain.OrderInfo;
+import com.sym.miaoshaodemo.redis.config.RedisUtil;
 import com.sym.miaoshaodemo.result.Result;
 import com.sym.miaoshaodemo.service.TestCacheService;
 import com.sym.miaoshaodemo.util.MD5Util;
@@ -22,6 +25,9 @@ import org.springframework.util.MultiValueMap;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author suyiming3333@gmail.com
@@ -38,6 +44,9 @@ public class LoginTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
 
     private LoginController loginController;
@@ -83,6 +92,47 @@ public class LoginTest {
     @Test
     public void testCache3(){
         testCacheService.testOrder(100112);
+    }
+
+    @Test
+    public void testHMSET(){
+        Map<String,String> studentMap = new HashMap<>();
+        Goods goods = new Goods();
+        goods.setId(1);
+        goods.setGoodsName("测试商品");
+
+        Map<String,String> goodMap = (Map<String, String>) goods;
+
+        studentMap.put("id","1");
+        studentMap.put("name","corn");
+        studentMap.put("age","26");
+        studentMap.put("set","0");
+        studentMap.put("birth","1993");
+
+//        System.out.println(redisUtil.hmset("Hash:Student","2",goodMap));
+        Map<String,String> result = redisUtil.hgetall("Hash:Student","1");
+        System.out.println(1);
+    }
+
+    @Test
+    public void testLpush(){
+        Goods goods = new Goods();
+        goods.setId(5);
+        goods.setGoodsName("测试商品5");
+        System.out.println(redisUtil.lpush("good","10086",goods));
+    }
+
+    @Test
+    public void testLindex(){
+        Goods goods = redisUtil.lindex("good","10086",1L,Goods.class);
+        System.out.println(111);
+    }
+
+    @Test
+    public void testLrange(){
+//        List<Goods> list = redisUtil.lrange("good","10086",0L,10L,Goods.class);
+        Map<Object,Object> result = redisUtil.lrangeByPage("good","10086",3L,2L,Goods.class);
+        System.out.println(1);
     }
 }
 

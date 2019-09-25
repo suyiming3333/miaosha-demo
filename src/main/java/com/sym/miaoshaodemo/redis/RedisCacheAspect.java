@@ -3,6 +3,7 @@ package com.sym.miaoshaodemo.redis;
 import com.sym.miaoshaodemo.redis.annotation.MyRedisCache;
 import com.sym.miaoshaodemo.redis.annotation.MyRedisCacheEvict;
 import com.sym.miaoshaodemo.redis.annotation.MyRedisCachePut;
+import com.sym.miaoshaodemo.redis.config.RedisUtil;
 import com.sym.miaoshaodemo.redis.key.KeyPrefix;
 import com.sym.miaoshaodemo.redis.key.RedisKeyEnum;
 import com.sym.miaoshaodemo.redis.service.RedisService;
@@ -35,7 +36,7 @@ import java.lang.reflect.Method;
 public class RedisCacheAspect {
 
     @Autowired
-    JedisPool jedisPool;
+    RedisUtil redisUtil;
 
     @Pointcut("@annotation(com.sym.miaoshaodemo.redis.annotation.MyRedisCache)")
     public void redisCachePointcut() {
@@ -94,7 +95,7 @@ public class RedisCacheAspect {
             value = joinPoint.proceed();
 
             //设置缓存
-            set(prefix.getPrefixKey(),realKey,prefix.getExpire(),value);
+            redisUtil.set(prefix.getPrefixKey(),realKey,prefix.getExpire(),value);
             System.out.println("redis缓存成功");
 
         } catch (NoSuchMethodException e) {
@@ -149,7 +150,7 @@ public class RedisCacheAspect {
             }
 
             //删除缓存
-            del(prefix.getPrefixKey(),realKey);
+            redisUtil.del(prefix.getPrefixKey(),realKey);
             System.out.println("redis清除缓存"+prefix+"-"+realKey);
 
         } catch (NoSuchMethodException e) {
@@ -212,7 +213,7 @@ public class RedisCacheAspect {
             }
 
             //尝试从缓存取值
-            value = get(prefix.getPrefixKey(),realKey,classType);
+            value = redisUtil.get(prefix.getPrefixKey(),realKey,classType);
 
             //存在直接返回值
             if(value !=null){
@@ -225,7 +226,7 @@ public class RedisCacheAspect {
             System.out.println("redis 里面没有值，只能充数据库拿");
 
             //设置缓存
-            set(prefix.getPrefixKey(),realKey,prefix.getExpire(),value);
+            redisUtil.set(prefix.getPrefixKey(),realKey,prefix.getExpire(),value);
 
 
         } catch (NoSuchMethodException e) {
@@ -239,83 +240,4 @@ public class RedisCacheAspect {
         return value;
     }
 
-
-    /**
-     * 获取缓存
-     * @param prefix
-     * @param key
-     * @param clazz
-     * @param <T>
-     * @return
-     */
-    public <T> T get(String prefix, String key, Class<T> clazz) {
-        Jedis jedis = null;
-        try {
-            jedis =  jedisPool.getResource();
-            //生成真正的key
-            String realKey  = prefix + "-" + key;
-            String  str = jedis.get(realKey);
-            T t =  SerializerUtil.jsonStringToBean(str, clazz);
-            return t;
-        }finally {
-            returnToPool(jedis);
-        }
-    }
-
-    /**
-     * 删除key
-     * @param prefix
-     * @param key
-     */
-    public void del(String prefix, String key){
-        Jedis jedis = null;
-        try {
-            jedis =  jedisPool.getResource();
-            //生成真正的key
-            String realKey  = prefix + "-" + key;
-            jedis.del(realKey);
-        }finally {
-            returnToPool(jedis);
-        }
-    }
-
-    /**
-     * 设置缓存
-     * @param prefix
-     * @param key
-     * @param value
-     * @param <T>
-     * @return
-     */
-    public <T> boolean set(String prefix, String key ,int expireTime,  T value) {
-        Jedis jedis = null;
-        try {
-            jedis =  jedisPool.getResource();
-            String str = SerializerUtil.beanToJsonString(value);
-            if(str == null || str.length() <= 0) {
-                return false;
-            }
-            //生成真正的key
-            String realKey  = prefix + "-" + key;
-            int seconds =  expireTime;
-            if(seconds <= 0) {
-                jedis.set(realKey, str);
-            }else {
-                jedis.setex(realKey, seconds, str);
-            }
-            return true;
-        }finally {
-            returnToPool(jedis);
-        }
-    }
-
-    /**
-     * 关闭redis连接
-     * @param jedis
-     */
-    private void returnToPool(Jedis jedis) {
-        if(jedis != null) {
-            jedis.close();
-        }
-    }
 }

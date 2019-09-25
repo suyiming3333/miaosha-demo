@@ -1,6 +1,7 @@
 package com.sym.miaoshaodemo.domain;
 
-public class Goods {
+
+public class Goods{
 	private Integer id;
 	private String goodsName;
 	private String goodsTitle;
