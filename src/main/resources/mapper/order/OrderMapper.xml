@@ -7,7 +7,7 @@
           and m.goodsId = #{goodsId}
     </select>
 
-    <insert id="addOrder" parameterType="com.sym.miaoshaodemo.domain.OrderInfo">
+    <insert id="addOrder" useGeneratedKeys="true" keyProperty="orderInfo.id"  parameterType="com.sym.miaoshaodemo.domain.OrderInfo">
         insert into ms_order (
           userId,
           goodsId,
@@ -29,9 +29,7 @@
           #{orderInfo.status},
           #{orderInfo.createDate}
         )
-        <selectKey keyColumn="id" keyProperty="id" resultType="Integer" statementType="STATEMENT">
-            select last_insert_id()
-        </selectKey>
+
     </insert>
 
     <insert id="addOrderRef">

@@ -43,7 +43,8 @@ public class OrderService {
         orderInfo.setOrderChannel(1);
         orderInfo.setStatus(0);
         orderInfo.setUserId(user.getId());
-        int orderId = orderMapper.addOrder(orderInfo);
+        orderMapper.addOrder(orderInfo);
+        int orderId = orderInfo.getId();
         orderMapper.addOrderRef(user.getId(),orderId,goods.getId());
         return orderInfo;
     }
