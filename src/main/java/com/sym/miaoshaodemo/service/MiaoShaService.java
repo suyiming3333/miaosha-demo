@@ -31,6 +31,10 @@ public class MiaoShaService {
     @Autowired
     OrderService orderService;
 
+    //应该在全局声明锁对象
+    private Lock lock = new ReentrantLock();
+
+
 
     /**
      * todo 用了lock锁还是会出现超卖情况
@@ -41,8 +45,8 @@ public class MiaoShaService {
     @Transactional(rollbackFor = RuntimeException.class)
     public OrderInfo doMiaoSha2(MiaoshaUser user, GoodsVo goods){
 
-        Lock lock = new ReentrantLock();
-
+        //局部声明锁，每个线程调用的时候都会新创建一个副本，导致锁不生效，还是会超卖
+//        Lock lock = new ReentrantLock();
         try{
             lock.lock();
             //判断库存数量
