@@ -1,15 +1,13 @@
 package com.sym.miaoshaodemo.redis.config;
 
 import com.sym.miaoshaodemo.util.SerializerUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author suyiming3333@gmail.com
@@ -39,7 +37,10 @@ public class RedisUtil {
         try {
             jedis =  jedisPool.getResource();
             //生成真正的key
-            String realKey  = prefix + "-" + key;
+            String realKey  = prefix;
+            if(StringUtils.isNotBlank(key)){
+                realKey  = prefix + "-" + key;
+            }
             String  str = jedis.get(realKey);
             T t =  SerializerUtil.jsonStringToBean(str, clazz);
             return t;
@@ -59,7 +60,10 @@ public class RedisUtil {
         try {
             jedis =  jedisPool.getResource();
             //生成真正的key
-            String realKey  = prefix + "-" + key;
+            String realKey  = prefix;
+            if(StringUtils.isNotBlank(key)){
+                realKey  = prefix + "-" + key;
+            }
             jedis.del(realKey);
         }finally {
             returnToPool(jedis);
@@ -84,7 +88,10 @@ public class RedisUtil {
                 return false;
             }
             //生成真正的key
-            String realKey  = prefix + "-" + key;
+            String realKey  = prefix;
+            if(StringUtils.isNotBlank(key)){
+                realKey  = prefix + "-" + key;
+            }
             int seconds =  expireTime;
             if(seconds <= 0) {
                 jedis.set(realKey, str);
@@ -110,7 +117,10 @@ public class RedisUtil {
         try{
             jedis = jedisPool.getResource();
             //生成真正的key
-            String realKey  = prefix + "-" + key;
+            String realKey  = prefix;
+            if(StringUtils.isNotBlank(key)){
+                realKey  = prefix + "-" + key;
+            }
             jedis.hmset(realKey, value);
             return true;
         }finally {
@@ -130,7 +140,10 @@ public class RedisUtil {
         try{
             jedis = jedisPool.getResource();
             //生成真正的key
-            String realKey  = prefix + "-" + key;
+            String realKey  = prefix;
+            if(StringUtils.isNotBlank(key)){
+                realKey  = prefix + "-" + key;
+            }
             return jedis.hgetAll(realKey);
         }finally {
             returnToPool(jedis);
@@ -152,7 +165,10 @@ public class RedisUtil {
         try{
             jedis = jedisPool.getResource();
             //生成真正的key
-            String realKey  = prefix + "-" + key;
+            String realKey  = prefix;
+            if(StringUtils.isNotBlank(key)){
+                realKey  = prefix + "-" + key;
+            }
             String str = SerializerUtil.beanToJsonString(value);
             jedis.lpush(realKey,str);
             return true;
@@ -177,7 +193,10 @@ public class RedisUtil {
         try{
             jedis = jedisPool.getResource();
             //生成真正的key
-            String realKey  = prefix + "-" + key;
+            String realKey  = prefix;
+            if(StringUtils.isNotBlank(key)){
+                realKey  = prefix + "-" + key;
+            }
             String str = jedis.lindex(realKey,index);
             T t =  SerializerUtil.jsonStringToBean(str, clazz);
             return t;
@@ -204,7 +223,10 @@ public class RedisUtil {
         try{
             jedis = jedisPool.getResource();
             //生成真正的key
-            String realKey  = prefix + "-" + key;
+            String realKey  = prefix;
+            if(StringUtils.isNotBlank(key)){
+                realKey  = prefix + "-" + key;
+            }
             List<String> list = jedis.lrange(realKey,start,end);
             String str = null;
             List<T> resultList = new ArrayList<>();
@@ -220,13 +242,26 @@ public class RedisUtil {
 
     }
 
+    /**
+     * list 分页获取缓存列表
+     * @param prefix
+     * @param key
+     * @param page
+     * @param rows
+     * @param clazz
+     * @param <T>
+     * @return
+     */
     public <T> Map<Object,Object> lrangeByPage(String prefix,String key,long page,long rows,Class<T> clazz){
         Jedis jedis = null;
         Map<Object,Object> resultMap = new HashMap<>();
         try{
             jedis = jedisPool.getResource();
             //生成真正的key
-            String realKey  = prefix + "-" + key;
+            String realKey  = prefix;
+            if(StringUtils.isNotBlank(key)){
+                realKey  = prefix + "-" + key;
+            }
             long end = (page * rows)-1;
             long start = (page-1) * rows;
             List<String> list = jedis.lrange(realKey,start,end);
@@ -250,6 +285,188 @@ public class RedisUtil {
         }
 
     }
+
+
+    /**
+     * sorted set 添加一个或多个键值对
+     * @param prefix
+     * @param key
+     * @param value
+     * @return
+     */
+    public boolean zadd(String prefix,String key,Map<String,Double> value){
+        Jedis jedis = null;
+
+        try{
+            jedis = jedisPool.getResource();
+            //生成真正的key
+            String realKey  = prefix;
+            if(StringUtils.isNotBlank(key)){
+                realKey  = prefix + "-" + key;
+            }
+            if(StringUtils.isNotBlank(key)){
+                realKey  = prefix + "-" + key;
+            }
+            jedis.zadd(realKey,value);
+            return true;
+        }finally {
+            returnToPool(jedis);
+        }
+
+    }
+
+    /**
+     * sorted set 移除一个成员
+     * @param prefix
+     * @param key
+     * @param member
+     * @return
+     */
+    public boolean zrem(String prefix,String key,String member){
+        Jedis jedis = null;
+
+        try{
+            jedis = jedisPool.getResource();
+            //生成真正的key
+            String realKey  = prefix;
+            if(StringUtils.isNotBlank(key)){
+                realKey  = prefix + "-" + key;
+            }
+            jedis.zrem(realKey,member);
+            return true;
+        }finally {
+            returnToPool(jedis);
+        }
+
+    }
+
+    /**
+     * 按分低到高返回某成员的排名
+     * @param prefix
+     * @param key
+     * @param member
+     * @return
+     */
+    public long zrank(String prefix,String key,String member){
+        Jedis jedis = null;
+
+        try{
+            jedis = jedisPool.getResource();
+            //生成真正的key
+            String realKey  = prefix;
+            if(StringUtils.isNotBlank(key)){
+                realKey  = prefix + "-" + key;
+            }
+            return jedis.zrank(realKey,member);
+        }finally {
+            returnToPool(jedis);
+        }
+
+    }
+
+    /**
+     * 按分数高到低返回某成员的排名
+     * @param prefix
+     * @param key
+     * @param member
+     * @return
+     */
+    public long zrevrank(String prefix,String key,String member){
+        Jedis jedis = null;
+
+        try{
+            jedis = jedisPool.getResource();
+            //生成真正的key
+            String realKey  = prefix;
+            if(StringUtils.isNotBlank(key)){
+                realKey  = prefix + "-" + key;
+            }
+            return jedis.zrevrank(realKey,member);
+
+        }finally {
+            returnToPool(jedis);
+        }
+
+    }
+
+    /**
+     * sorted set 返回区间范围，分数由低到高的
+     * @param prefix
+     * @param key
+     * @param start
+     * @param end
+     * @return
+     */
+    public Set<String> zrange(String prefix, String key, long start, long end){
+        Jedis jedis = null;
+
+        try{
+            jedis = jedisPool.getResource();
+            //生成真正的key
+            String realKey  = prefix;
+            if(StringUtils.isNotBlank(key)){
+                realKey  = prefix + "-" + key;
+            }
+            return jedis.zrange(realKey,start,end);
+
+        }finally {
+            returnToPool(jedis);
+        }
+
+    }
+
+    /**
+     * sorted set 返回区间范围，分数由高到低的
+     * @param prefix
+     * @param key
+     * @param start
+     * @param end
+     * @return
+     */
+    public Set<String> zrevrange(String prefix, String key, long start, long end){
+        Jedis jedis = null;
+
+        try{
+            jedis = jedisPool.getResource();
+            //生成真正的key
+            String realKey  = prefix;
+            if(StringUtils.isNotBlank(key)){
+                realKey  = prefix + "-" + key;
+            }
+            return jedis.zrevrange(realKey,start,end);
+
+        }finally {
+            returnToPool(jedis);
+        }
+
+    }
+
+    /**
+     * sorted set 返回有序集中指定分数区间内的成员，分数从高到低排序
+     * @param prefix
+     * @param key
+     * @param start
+     * @param end
+     * @return
+     */
+    public Set<String> zrevrangeByScore(String prefix, String key, long start, long end){
+        Jedis jedis = null;
+
+        try{
+            jedis = jedisPool.getResource();
+            //生成真正的key
+            String realKey  = prefix;
+            if(StringUtils.isNotBlank(key)){
+                realKey  = prefix + "-" + key;
+            }
+            return jedis.zrevrangeByScore(realKey,start,end);
+
+        }finally {
+            returnToPool(jedis);
+        }
+
+    }
+
 
     /**
      * 关闭redis连接

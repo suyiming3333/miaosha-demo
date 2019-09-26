@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author suyiming3333@gmail.com
@@ -132,6 +133,28 @@ public class LoginTest {
     public void testLrange(){
 //        List<Goods> list = redisUtil.lrange("good","10086",0L,10L,Goods.class);
         Map<Object,Object> result = redisUtil.lrangeByPage("good","10086",3L,2L,Goods.class);
+        System.out.println(1);
+    }
+
+    @Test
+    public void testSortedSet(){
+        Map<String,Double> data = new HashMap<>();
+        data.put("corn",89d);
+        data.put("tom",99d);
+        data.put("lily",55d);
+        data.put("bill",67d);
+        data.put("bob",34d);
+        data.put("ben",100d);
+        data.put("tim",77d);
+        data.put("suyim",89d);
+        data.put("ice",85d);
+        data.put("ocen",95d);
+        System.out.println("init data"+redisUtil.zadd("score:math",null,data));
+    }
+
+    @Test
+    public void testSortedSet2(){
+        Set<String> result = redisUtil.zrevrangeByScore("score:math",null,100L,0L);
         System.out.println(1);
     }
 }
